@@ -1,21 +1,35 @@
+import java.util.Scanner;
+
 /**
- * DataStructures
+ * StackArray
  */
-public class DataStructures {
+public class StackArray {
 
     public static void main(String[] args) {
-        StackArray stack = new StackArray();
-        stack.push(1);
-        stack.push(2);
-        stack.push(3);
+        int number;
+        StackArray stack = new StackArray(5);
 
-        System.out.println(stack.pop());
-        System.out.println(stack.pop());
-        System.out.println(stack.pop());
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println();
+        System.out.println("Enter an integer or a -1 to stop: ");
+        number = scanner.nextInt();
+        while (number >= 0 && !stack.full()) {
+            stack.push(number);
+            System.out.println("Enter an integer or a -1 to stop: ");
+            number = scanner.nextInt();
+        }
+        
+
+        System.out.println();
+        System.out.print("the reverse integers are: ");
+        while(!stack.empty())
+            System.out.print(stack.pop() + " ");
+        System.out.println();
+        System.out.println();
     }
 
-    static class StackArray{
-        private static final int N = 3;
+    private static final int N = 3;
         private int top;
         private int stack_array[];
     
@@ -48,6 +62,5 @@ public class DataStructures {
             return stack_array[top];
     
         }
-    }
 
 }
