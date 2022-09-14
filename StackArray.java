@@ -9,18 +9,17 @@ public class StackArray {
         int number;
         StackArray stack = new StackArray(5);
 
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println();
-        System.out.println("Enter an integer or a -1 to stop: ");
-        number = scanner.nextInt();
-        while (number >= 0 && !stack.full()) {
-            stack.push(number);
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println();
             System.out.println("Enter an integer or a -1 to stop: ");
             number = scanner.nextInt();
+            while (number >= 0 && !stack.full()) {
+                stack.push(number);
+                System.out.println("Enter an integer or a -1 to stop: ");
+                number = scanner.nextInt();
+            }
         }
         
-
         System.out.println();
         System.out.print("the reverse integers are: ");
         while(!stack.empty())
