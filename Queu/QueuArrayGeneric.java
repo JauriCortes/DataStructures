@@ -2,13 +2,16 @@ package Queu;
 
 
 public class QueuArrayGeneric<T> {
-    private final int N = 4;
+    private static final int N = 4;
     private int front, rear, count;
     private T[] qarray;
 
     public QueuArrayGeneric() {
+        this(N);
+    }
+    public QueuArrayGeneric(int n) {
         front = rear = count = 0;
-        qarray = (T[]) new Object[N];
+        qarray = (T[]) new Object[n];
     }
 
     public T dequeu() {
