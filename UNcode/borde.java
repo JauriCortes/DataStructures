@@ -2,8 +2,6 @@ package UNcode;
 
 import java.util.Scanner;
 
-import javax.swing.plaf.synth.SynthStyle;
-
 public class borde {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
@@ -16,10 +14,18 @@ public class borde {
             cola.enqueu(string.charAt(i));
             pila.push(string.charAt(i));
         }
-        for(int i = 0; i < string.length(); i++) {
-            System.out.println(cola.dequeu());
-            System.out.println(pila.pop());   
+        
+        String pre = "";
+        String post = "";
+        while(!cola.empty()) {
+            pre = pre + cola.dequeu();
+            post = pila.pop() + post;
+            
+            if(pre.equals(post)) {
+                System.out.println(pre);
+            }
         }
+
     }
 
     static class QueuArrayGeneric<T> {
@@ -41,7 +47,7 @@ public class borde {
                 throw new RuntimeException("Queue is empty: " + "item not dequed");
             }
             item = qarray[front];
-            front = (front + 1) % N;
+            front = (front + 1) % qarray.length;
             count--;
     
             return item;
@@ -52,7 +58,7 @@ public class borde {
                 throw new RuntimeException("Queu is full: "+"item not enqued");
             }
             qarray[rear] = item;
-            rear = (rear + 1) % N;
+            rear = (rear + 1) % qarray.length;
             count++;
         }
     
@@ -60,7 +66,7 @@ public class borde {
             return count <= 0;
         }
         public boolean full() {
-            return count >= N;
+            return count >= qarray.length;
         }
         public int getCount() {
             return count;
@@ -127,6 +133,5 @@ public class borde {
     
         }
     
-    }
-    
+    }    
 }

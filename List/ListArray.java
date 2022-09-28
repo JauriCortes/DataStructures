@@ -1,19 +1,22 @@
 package List;
 
 public class ListArray {
-    int N = 5; 
+    static int N = 5; 
     int count, position, larray[];
 
     ListArray() {
+        this(N);
+    }
+    ListArray(int n) {
         count = position = 0;
-        larray = new int[N];
+        larray = new int[n];
     }
 
     public boolean empty() {
         return (count <= 0);
     }
     public boolean full() {
-        return (count >= N);
+        return (count >= larray.length);
     }
 
     public boolean insert(int item) {

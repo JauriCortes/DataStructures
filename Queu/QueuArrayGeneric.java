@@ -20,7 +20,7 @@ public class QueuArrayGeneric<T> {
             throw new RuntimeException("Queue is empty: " + "item not dequed");
         }
         item = qarray[front];
-        front = (front + 1) % N;
+        front = (front + 1) % qarray.length;
         count--;
 
         return item;
@@ -31,7 +31,7 @@ public class QueuArrayGeneric<T> {
             throw new RuntimeException("Queu is full: "+"item not enqued");
         }
         qarray[rear] = item;
-        rear = (rear + 1) % N;
+        rear = (rear + 1) % qarray.length;
         count++;
     }
 
@@ -39,7 +39,7 @@ public class QueuArrayGeneric<T> {
         return count <= 0;
     }
     public boolean full() {
-        return count >= N;
+        return count >= qarray.length;
     }
     public int getCount() {
         return count;
