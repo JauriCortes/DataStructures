@@ -2,14 +2,23 @@ package UNcode;
 
 import java.util.Scanner;
 
-public class borde {
+public class Main {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
-        String string = scan.nextLine();
+        String old_string = scan.nextLine();
+        String string = "";
+        
+        for(int i = 0; i<old_string.length(); i++) {
+            char letter = old_string.charAt(i);
+            if(letter != '[' && letter != ']' && letter != ',') {
+                string = string + letter;
+            }
+        }
 
         final QueuArrayGeneric<Character> cola = new QueuArrayGeneric<Character>(string.length());
         final StackArrayGeneric<Character> pila = new StackArrayGeneric<Character>(string.length());
-
+        final LinkedListGeneric<Character> MiLista = new LinkedListGeneric<Character>();
+        
         for(int i = 0; i < string.length(); i++) {
             cola.enqueu(string.charAt(i));
             pila.push(string.charAt(i));
@@ -22,7 +31,16 @@ public class borde {
             post = pila.pop() + post;
             
             if(pre.equals(post)) {
-                System.out.println(pre);
+                
+                System.out.print('[');
+                System.out.print(post.charAt(0));
+                for (int j = 1; j< post.length(); j++) {
+                    System.out.print(',');
+                    System.out.print(post.charAt(j));
+                }
+                System.out.print(']');
+                System.out.println();
+
             }
         }
 
@@ -133,5 +151,90 @@ public class borde {
     
         }
     
-    }    
+    }
+
+    private static class NodeGeneric <T>{
+        private T data;
+        private NodeGeneric<T> next;
+    
+        public NodeGeneric() {
+            this(null);
+        }
+        public NodeGeneric(T data) {
+            this.data = data;
+            next = null;
+        }
+    
+        public T getData() {
+            return data;
+        }
+    
+        public void setData(T data) {
+            this.data = data;
+        }
+    
+        public NodeGeneric<T> getNext() {
+            return next;
+        }
+    
+        public void setNext(NodeGeneric<T> next) {
+            this.next = next;
+        }
+    }
+
+    private static class LinkedListGeneric<J> {
+
+        private NodeGeneric<J> head;
+        private NodeGeneric<J> newNode;
+        private NodeGeneric<J> ref;
+        //constructor
+        public LinkedListGeneric() {
+            head = null;
+        }
+        //add method
+        public void addFront(J data) {
+            if (head != null) {
+                newNode = new NodeGeneric<J>(data);
+                newNode.setNext(head);
+                
+                head = newNode;
+            }
+            else {
+                head = new NodeGeneric<J>(data);
+            }
+        }
+        
+        public void addBack(J data) {
+            
+            newNode = new NodeGeneric<J>(data);
+    
+            if (head != null) {
+                ref = head;
+                while(ref.getNext() != null) {
+                    ref = ref.getNext();
+                }
+                ref.setNext(newNode);
+            }
+            else {
+                head = newNode;    
+            }
+    
+        }
+    
+        //print method
+        public void printList() {
+            ref = head;
+            System.out.print('[');
+            while(ref != null) {
+                System.out.print(ref.getData());
+                if (ref.getNext() != null) {
+                    System.out.print(',');
+                }
+                ref = ref.getNext();
+            }
+            System.out.print(']');
+            System.out.println();
+        }
+    }
+    
 }
