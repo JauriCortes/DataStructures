@@ -2,7 +2,7 @@ package UNcode;
 
 import java.util.Scanner;
 
-public class Main {
+public class Borde {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         String old_string = scan.nextLine();
