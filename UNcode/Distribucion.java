@@ -4,62 +4,127 @@ import java.util.Scanner;
 
 public class Distribucion {
     public static void main(String[] args) {
-        //hay que cargar una lista con el orden de distribucion
+
         Scanner scan = new Scanner(System.in);
 
+        //carga una lista con el orden de Ingenieria, Humanas, Medicina, Artes
         scan.next();
-        int estudiantes_ingenieria = scan.nextInt();
+        int EstI = scan.nextInt();
         scan.next();
-        int estudiantes_humanas = scan.nextInt();
+        int EstH = scan.nextInt();
         scan.next();
-        int estudiantes_artes = scan.nextInt();
+        int EstA = scan.nextInt();
         scan.next();
-        int estudiantes_medicina = scan.nextInt();
+        int EstM = scan.nextInt();
+        LinkedListGeneric<facultad> lista_prioridad = HacerListaPrioridad(EstI, EstH, EstM, EstA);
+        
+        //carga una lista en el orden en que van a salir los lotes
+        LinkedListGeneric<facultad> lista_distribucion = HacerListaDistribucion(lista_prioridad);
 
-        facultad ingenieria = new facultad("ingenieria", estudiantes_ingenieria);
-        facultad humanas = new facultad("humanas", estudiantes_humanas);
-        facultad artes = new facultad("artes", estudiantes_artes);
-        facultad medicina = new facultad("medicina", estudiantes_medicina);
+        LinkedListGeneric<equipo> lista_equipos = new LinkedListGeneric<equipo>();
+        
 
-        LinkedListGeneric<facultad> lista_prioridad = new LinkedListGeneric<facultad>();
+        equipo comp = new equipo("computador", 0);
+        equipo lapt = new equipo("laptop", 0);
+        equipo tabl = new equipo("tablet", 0);
+
+        lista_equipos.addBack(comp);
+        lista_equipos.addBack(lapt);
+        lista_equipos.addBack(tabl);
+        
+
+        //revisa la siguiente orden
+        while(true) {
+            String siguiente_orden = scan.next();        
+            
+            if (siguiente_orden.equals("Lote")) {
+
+                scan.next();
+                lista_equipos.search(0).getData().cantidad += scan.nextInt();
+                scan.next();
+                lista_equipos.search(1).getData().cantidad += scan.nextInt();
+                scan.next();
+                lista_equipos.search(2).getData().cantidad += scan.nextInt();
+
+                for (int j = 0; j < lista_distribucion.count();  j++) {
+                    while(lista_distribucion.search(j).getData().estudiantes > 0) {
+                        if (lista_equipos.search((j%3)).getData().cantidad > 0) {
+                            asignar(lista_distribucion.search(j).getData(), lista_equipos.search(j%3).getData());
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+
+    static LinkedListGeneric<facultad> HacerListaDistribucion(LinkedListGeneric<facultad> lista_prioridad) {
+
         LinkedListGeneric<facultad> lista_distribucion = new LinkedListGeneric<facultad>();
-        lista_prioridad.addBack(ingenieria); 
-        lista_prioridad.addBack(humanas); 
-        lista_prioridad.addBack(medicina);
-        lista_prioridad.addBack(artes); 
-        
-        
         
         while(!lista_prioridad.empty()) {
-            facultad max_facultad = lista_prioridad.spy(0).getData();
+            facultad max_facultad = lista_prioridad.search(0).getData();
             int max_index = 0;
-
+            
             for (int i = 1; i<lista_prioridad.count(); i++) {
-                if(lista_prioridad.spy(i).getData().estudiantes > max_facultad.estudiantes){
-                    max_facultad = lista_prioridad.spy(i).getData();
+                if(lista_prioridad.search(i).getData().estudiantes > max_facultad.estudiantes){
+                    max_facultad = lista_prioridad.search(i).getData();
                     max_index = i;
                 }
             }
             lista_distribucion.addBack(lista_prioridad.delete(max_index).getData());
         }
+        return(lista_distribucion);
+    }
+    
+    static LinkedListGeneric<facultad> HacerListaPrioridad(int EstI, int EstH, int EstM, int EstA) {
 
-        
-        while(!lista_distribucion.empty()) {
-            System.out.println(lista_distribucion.delete(0).getData().nombre);
-        }
+        facultad ingenieria = new facultad("ingenieria", EstI);
+        facultad humanas = new facultad("humanas", EstH);
+        facultad medicina = new facultad("medicina", EstM);
+        facultad artes = new facultad("artes", EstA);
+
+        LinkedListGeneric<facultad> lista_prioridad = new LinkedListGeneric<facultad>();
+
+        lista_prioridad.addBack(ingenieria); 
+        lista_prioridad.addBack(humanas); 
+        lista_prioridad.addBack(medicina);
+        lista_prioridad.addBack(artes);
+
+        return (lista_prioridad);
+    }
+
+    static void asignar(facultad facultad, equipo equipo) {
+        facultad.estudiantes -= 1;
+        facultad.equipos_asignados(equipo.nombre);
+        equipo.cantidad -= 1;
     }
 
     static class facultad {
         String nombre;
         int estudiantes;
 
+        int Ncomp;
+        int Nlapt;
+        int Ntabl;
+
         facultad(String nombre, int estudiantes) {
             this.nombre = nombre;
             this.estudiantes = estudiantes;
-        }
 
-        public int getEstudiantes() {
-            return estudiantes;
+            this.Ncomp = 0;
+            this.Nlapt = 0;
+            this.Ntabl = 0;
+        }
+    }
+
+    static class equipo {
+        String nombre;
+        int cantidad;
+
+        equipo(String nombre, int cantidad) {
+            this.nombre = nombre;
+            this.cantidad = cantidad;
         }
     }
 
@@ -125,7 +190,7 @@ public class Distribucion {
             return(count);
         }
 
-        public NodeGeneric<J> spy(int n) {
+        public NodeGeneric<J> search(int n) {
             int count = 0;
             ref = head;
             while(count < n) {
@@ -138,7 +203,7 @@ public class Distribucion {
         public NodeGeneric<J> delete(int n){
             ref = head;
             if (n>0) {
-                NodeGeneric<J> prev = spy(n-1);
+                NodeGeneric<J> prev = search(n-1);
                 ref = prev.getNext();
     
                 prev.setNext(ref.getNext());
