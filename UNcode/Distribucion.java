@@ -20,40 +20,59 @@ public class Distribucion {
         
         //carga una lista en el orden en que van a salir los lotes
         LinkedListGeneric<facultad> lista_distribucion = HacerListaDistribucion(lista_prioridad);
-
-        LinkedListGeneric<equipo> lista_equipos = new LinkedListGeneric<equipo>();
         
-
-        equipo comp = new equipo("computador", 0);
-        equipo lapt = new equipo("laptop", 0);
-        equipo tabl = new equipo("tablet", 0);
-
-        lista_equipos.addBack(comp);
-        lista_equipos.addBack(lapt);
-        lista_equipos.addBack(tabl);
+        LinkedListGeneric<LinkedListGeneric<equipo>> lista_lotes = new LinkedListGeneric<LinkedListGeneric<equipo>>();
+    
         
-
         //revisa la siguiente orden
         while(true) {
             String siguiente_orden = scan.next();        
             
             if (siguiente_orden.equals("Lote")) {
 
+                LinkedListGeneric<equipo> lista_equipos = new LinkedListGeneric<equipo>();
+                
                 scan.next();
-                lista_equipos.search(0).getData().cantidad += scan.nextInt();
+                equipo comp = new equipo("computador", scan.nextInt());
                 scan.next();
-                lista_equipos.search(1).getData().cantidad += scan.nextInt();
+                equipo lapt = new equipo("laptop", scan.nextInt());
                 scan.next();
-                lista_equipos.search(2).getData().cantidad += scan.nextInt();
+                equipo tabl = new equipo("tablet", scan.nextInt());
 
-                for (int j = 0; j < lista_distribucion.count();  j++) {
-                    while(lista_distribucion.search(j).getData().estudiantes > 0) {
-                        if (lista_equipos.search((j%3)).getData().cantidad > 0) {
-                            asignar(lista_distribucion.search(j).getData(), lista_equipos.search(j%3).getData());
+                lista_equipos.addBack(comp);
+                lista_equipos.addBack(lapt);
+                lista_equipos.addBack(tabl);
+
+                lista_lotes.addBack(lista_equipos);
+                
+            }
+            else if(siguiente_orden.equals("Distribuir")) {
+                distribucion(lista_distribucion, lista_lotes.delete(0).getData());
+                lista_distribucion = HacerListaDistribucion(lista_prioridad);
+            }
+            else if (siguiente_orden.equals("Imprimir")) {
+
+                LinkedListGeneric<facultad> lista_buffer = new LinkedListGeneric<facultad>();
+
+                for (int i = 0; i < lista_prioridad.count(); i++) {
+                    lista_buffer.addBack(lista_prioridad.search(i).getData());
+                }
+
+                while(!lista_buffer.empty()) {
+                    facultad min_facultad = lista_buffer.search(0).getData();
+                    int min_index = 0;
+                    
+                    for (int i = 1; i<lista_buffer.count(); i++) {
+                        facultad facultad = lista_buffer.search(i).getData();
+                        if(facultad.estudiantes < min_facultad.estudiantes){
+                            min_facultad = facultad;
+                            min_index = i;
                         }
                     }
+                    System.out.println(min_facultad.nombre+" "+min_facultad.estudiantes+" - Computers "+min_facultad.Ncomp+" Laptops "+min_facultad.Nlapt+" Tablets "+min_facultad.Ntabl);
+                    lista_buffer.delete(min_index);
                 }
-                
+
             }
         }
     }
@@ -61,18 +80,23 @@ public class Distribucion {
     static LinkedListGeneric<facultad> HacerListaDistribucion(LinkedListGeneric<facultad> lista_prioridad) {
 
         LinkedListGeneric<facultad> lista_distribucion = new LinkedListGeneric<facultad>();
-        
-        while(!lista_prioridad.empty()) {
-            facultad max_facultad = lista_prioridad.search(0).getData();
+        LinkedListGeneric<facultad> lista_buffer = new LinkedListGeneric<facultad>();
+
+        for (int i = 0; i < lista_prioridad.count(); i++) {
+            lista_buffer.addBack(lista_prioridad.search(i).getData());
+        }
+
+        while(!lista_buffer.empty()) {
+            facultad max_facultad = lista_buffer.search(0).getData();
             int max_index = 0;
             
-            for (int i = 1; i<lista_prioridad.count(); i++) {
-                if(lista_prioridad.search(i).getData().estudiantes > max_facultad.estudiantes){
-                    max_facultad = lista_prioridad.search(i).getData();
+            for (int i = 1; i<lista_buffer.count(); i++) {
+                if(lista_buffer.search(i).getData().estudiantes > max_facultad.estudiantes){
+                    max_facultad = lista_buffer.search(i).getData();
                     max_index = i;
                 }
             }
-            lista_distribucion.addBack(lista_prioridad.delete(max_index).getData());
+            lista_distribucion.addBack(lista_buffer.delete(max_index).getData());
         }
         return(lista_distribucion);
     }
@@ -96,9 +120,51 @@ public class Distribucion {
 
     static void asignar(facultad facultad, equipo equipo) {
         facultad.estudiantes -= 1;
-        facultad.equipos_asignados(equipo.nombre);
         equipo.cantidad -= 1;
+
+        if(equipo.nombre == "computador") {
+            facultad.Ncomp += 1;
+        } else if (equipo.nombre == "laptop") {
+            facultad.Nlapt += 1;
+        } else if (equipo.nombre == "tablet") {
+            facultad.Ntabl += 1;
+        }
     }
+
+    static void distribucion(LinkedListGeneric<facultad> lista_distribucion, LinkedListGeneric<equipo> lista_equipos ) {
+        int count = 0;
+            for (int j = 0; j < lista_distribucion.count();  j++) {
+
+                facultad facultad = lista_distribucion.search(j).getData();
+                facultad.Ncomp = 0;
+                facultad.Nlapt = 0;
+                facultad.Ntabl = 0;
+                
+                while(facultad.estudiantes > 0 && HayaEquipos(lista_equipos)) {
+                    equipo equipo = lista_equipos.search(count%3).getData();
+
+                    if (equipo.cantidad > 0) {
+                        asignar(facultad, equipo);
+                    }
+                    count++;
+                }
+            }
+    }
+
+    static boolean HayaEquipos(LinkedListGeneric<equipo> lista_equipos) {
+
+        if (!lista_equipos.empty()) {
+            int n = lista_equipos.count();
+            for (int y = 0; y < n; y++) {
+                if (lista_equipos.search(y).getData().cantidad > 0) {
+                    return (true);
+                }
+            }
+        }
+        return (false);
+    }
+
+
 
     static class facultad {
         String nombre;
