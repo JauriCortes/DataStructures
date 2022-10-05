@@ -25,7 +25,7 @@ public class Distribucion {
     
         
         //revisa la siguiente orden
-        while(true) {
+        while(scan.hasNext()) {
             String siguiente_orden = scan.next();        
             
             if (siguiente_orden.equals("Lote")) {

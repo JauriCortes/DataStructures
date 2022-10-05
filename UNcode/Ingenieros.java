@@ -7,8 +7,9 @@ public class Ingenieros {
 
         Scanner scan = new Scanner(System.in);
         LinkedListGeneric<ingeniero> ingenieros_disponibles = new LinkedListGeneric<ingeniero>();
+        
         String disponible = "NO";
-
+        
         int EH = scan.nextInt();
         int EI = scan.nextInt();
         int EC = scan.nextInt();
@@ -28,21 +29,23 @@ public class Ingenieros {
         }
 
         for (int i = 0; i < EC; i++) {
+            
+            int clienteExperiencia = scan.nextInt();
+            int clienteHora = scan.nextInt();
+            
             disponible = "NO";
-
-            int CE = scan.nextInt();
-            int CH = scan.nextInt();
-
             for(int j = 0; j < ingenieros_disponibles.count; j++) {
 
                 ingeniero ingeniero = ingenieros_disponibles.search(j).getData();
 
-                if(ingeniero.hora_entrada <= CH && ingeniero.hora_salida >= CH && ingeniero.experiencia >= CE) { 
+                if(ingeniero.hora_entrada <= clienteHora && ingeniero.hora_salida >= clienteHora && ingeniero.experiencia >= clienteExperiencia) { 
 
                     disponible = "YES";
                 }
             }
             System.out.println(disponible);
+            
+            
         }
     }
 
@@ -118,6 +121,7 @@ public class Ingenieros {
                 ref = head;
                 while( item < n) {
                     ref = ref.next;
+                    item++;
                 }
             }
             else {
