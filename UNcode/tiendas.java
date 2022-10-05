@@ -14,31 +14,41 @@ public class tiendas {
             
             int N_ELDMS = scan.nextInt();
             QueuArrayGeneric<String> electrodomesticos = new QueuArrayGeneric<String>(N_ELDMS);
-
+            
             for (int j = 0; j < N_ELDMS; j++) {
                 String electro = scan.next();
                 electrodomesticos.enqueu(electro);
             }
-
+            
             int N_tiendas = scan.nextInt();
-
+            
             for (int t = 0; t < N_tiendas; t++) {
+                QueuArrayGeneric<String> electrodomesticos_deTienda = new QueuArrayGeneric<String>(N_ELDMS);
                 int ELDMS_por_tienda = scan.nextInt();
 
-                System.out.print("[");
-                for (int u = 0; u < ELDMS_por_tienda; u++){
+                for (int u = 0; u < ELDMS_por_tienda; u++) {
                     if (!electrodomesticos.empty()) {
 
-                        String electro_saliente = electrodomesticos.dequeu();
-                        System.out.print(electro_saliente);
-                        
-                        if(!(u == ELDMS_por_tienda-1)) {
-                            System.out.print(" ");
-                        }
+                        String electrodomestico = electrodomesticos.dequeu();
+                        electrodomesticos_deTienda.enqueu(electrodomestico);
                     }
+                }
+                
+                System.out.print("[");
+                while(!electrodomesticos_deTienda.empty()){
+
+                    String electro_saliente = electrodomesticos_deTienda.dequeu();
+                    System.out.print(electro_saliente);
+                    
+                    if(!electrodomesticos_deTienda.empty()) {
+                        System.out.print(" ");
+                    }
+                    
+                    
                 }
                 System.out.println("]");
             }
+
         }
     }
 
